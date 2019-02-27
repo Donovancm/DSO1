@@ -10,26 +10,26 @@ namespace UserItem.Data
         {
 
         }
-        public Dictionary<double, double[,]> GetData(double[,] data)
+        public Dictionary<int, double[,]> GetData(double[,] data)
         {
-            var dictionary = new Dictionary<double, double[,]>();
+            var dictionary = new Dictionary<int, double[,]>();
             int rowLength = data.GetLength(0);
             int colLenght = data.GetLength(1);
             bool checkeNewRow = false;
 
             for (int i = 0; i < rowLength; i++)
             {
-                double key = -1;
+                int key = -1;
                 double productvalue = -1;
                 double userRating = -1;
                 checkeNewRow = false;
 
                 for (int j = 0; j < colLenght; j++)
                 {
-                    Console.WriteLine(data[i, j]);
+                    //Console.WriteLine(data[i, j]);
                     if (!checkeNewRow)
                     {
-                        key = data[i, j];
+                        key = int.Parse(data[i, j]+"");
                         checkeNewRow = true;
 
                     }

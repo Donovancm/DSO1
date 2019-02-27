@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UserItem.Data;
+using UserItem.Distances;
 
 namespace UserItem
 {
@@ -38,13 +39,16 @@ namespace UserItem
 {6,101,3.0},
 {7,102,4.5},
 {7,105,1.0}};
-            Dictionary<double, double[,]> dictionary = getData(data);
+            Dictionary<int, double[,]> dictionary = getData(data);
+            Console.WriteLine("Euclidean similarity of User 1 and 2");
+            Console.WriteLine("Answer: " + Euclidean.ComputeEuclidean(dictionary[7], dictionary[1]));
+         
             Console.ReadLine();
         }
-        public static Dictionary<double, double[,]> getData(double[,] data)
+        public static Dictionary<int, double[,]> getData(double[,] data)
         {
             FileReader r = new FileReader();
-            Dictionary<double, double[,]> dictionary = r.GetData(data);
+            Dictionary<int, double[,]> dictionary = r.GetData(data);
             return dictionary;
         }
 
