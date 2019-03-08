@@ -51,6 +51,7 @@ namespace UserItem
             Console.WriteLine("Euclidean similarity of User 1 and 2");
             Console.WriteLine("Answer: " + Cosine.CosineSimilarity(dictionary[1], dictionary[7] ));
             Console.WriteLine("Answer: " + Cosine.CosineSimilarity(dictionary[7], dictionary[1]));
+            Console.WriteLine("NearestNeighbours" + Recommender.NearestNeighbour.ComputeRecommendations(7, dictionary,3));
             //var clara = new double[,] {
             //    {1,4.75 },
             //    {2,4.5 },
