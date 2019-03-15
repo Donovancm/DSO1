@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace UserItem.Recommender
 {
@@ -25,14 +26,13 @@ namespace UserItem.Recommender
                     var user_id = item.Key;
                     var distance = Distances.Pearson.ComputePearson(users[UserID], users[item.Key]);
                     
-                   for (int i = 0; i < row-1; i++)
+                   for (int i = 0; i <= row-1; i++)
                     {
                         if (distances_neighbours[i,0]==0)
                         {
-                            distances_neighbours[i, 0] = user_id;
-                            distances_neighbours[i, 1] = distance;
-                            break;
-
+                                distances_neighbours[i, 0] = user_id;
+                                distances_neighbours[i, 1] = distance;
+                                break;
                         }
 
                     }
@@ -41,7 +41,34 @@ namespace UserItem.Recommender
 
             }
             // forloop voor sorteren
+            distances_neighbours = InsertionSort(distances_neighbours);
             return distances_neighbours;
+        }
+
+        public static double[,] InsertionSort(double[,] datas)
+        {
+            var data = datas;
+            var number = data.GetLength(0);
+            var array = new double[number];
+            var newArray = new double[number, 2];
+            for (int i = 0; i <= data.GetLength(0) - 1; i++)
+            {
+                array[i] = data[i,1];
+            }
+            Array.Sort(array);
+            Array.Reverse(array);
+            for (int a = 0; a <= data.GetLength(0) - 1; a++)
+            {
+                for (int b = 0; b <= data.GetLength(0) - 1; b++)
+                {
+                    if (array[a] == data[b,1])
+                    {
+                        newArray[a, 0] = data[b, 0];
+                        newArray[a, 1] = data[b, 1];
+                    }
+                }
+            }
+            return newArray;
         }
 
         public static double[,] ComputeRecommendations(int UserID, Dictionary<int, double[,]> users, int k)
@@ -55,38 +82,58 @@ namespace UserItem.Recommender
                 total_distance += nearest[i,1];
 
             }
-            for (int i = 0; i < k-1; i++)
+            for (int i = 0; i <= k-1; i++)
             {
                 var weight = nearest[i, 1] / total_distance;
                 double user_id = nearest[i, 0];
                 var neighborRatings = users[int.Parse(user_id.ToString())];
                 int row = neighborRatings.GetLength(0);
 
-                for (int j = 0; j < row -1 ; j++)
+                for (int j = 0; j <= row -1 ; j++)
                 {
                     for (int a = 0; a < userRatings.GetLength(0)-1; a++)
                     {
                         if (!neighborRatings[j,0].Equals(userRatings[a,0]))
                         {
-                            for (int b = 0; b < recommendations.GetLength(0)-1; b++)
+                            var recommendedProduct = ""; 
+                            for (int b = 0; b <= recommendations.GetLength(0) -1; b++)
                             {
-                                if (recommendations[b, 0] == null && recommendations[0, 0]!=null || !user_id.Equals(recommendations[b,0]) )
+                                //if (recommendations[b, 0] == null && recommendations[0, 0]!=null && !user_id.Equals(recommendations[b,0]) )
+                                //{
+                                //    recommendations[b, 0] = user_id;
+                                //    recommendations[b, 1] = (neighborRatings[j, 1]* weight);
+                                //}
+                                //else
+                                //{
+                                //    if (recommendations[0, 0] == null)
+                                //    {
+                                //        recommendations[b, 0] = user_id;
+                                //        recommendations[b, 1] = (neighborRatings[j, 1] * weight);
+                                //    }
+                                //    else
+                                //    {
+                                //        recommendations[b, 1] += (neighborRatings[j, 1] * weight);
+                                //    }
+
+                                //}
+                                if (recommendations[0, 0] == 0)
+                                {
+                                    recommendations[b, 0] = user_id;
+                                    recommendations[b, 1] = (neighborRatings[j, 1] * weight);
+                                    recommendedProduct = neighborRatings[j, 0] + "";
+                                    break;
+                                }
+                                else if (!user_id.Equals(recommendations[b, 0]) && recommendations[b, 0].Equals(0) && !recommendedProduct.Contains(neighborRatings[j, 0]+""))
                                 {
                                     recommendations[b, 0] = user_id;
                                     recommendations[b, 1] = (neighborRatings[j, 1]* weight);
+                                    recommendedProduct = neighborRatings[j, 0] + "";
+                                    break;
                                 }
-                                else
+                                else if(user_id.Equals(recommendations[b, 0]) && !recommendedProduct.Contains(neighborRatings[j, 0] + ""))
                                 {
-                                    if (recommendations[0, 0] == null)
-                                    {
-                                        recommendations[b, 0] = user_id;
-                                        recommendations[b, 1] = (neighborRatings[j, 1] * weight);
-                                    }
-                                    else
-                                    {
-                                        recommendations[b, 1] += (neighborRatings[j, 1] * weight);
-                                    }
-                                    
+                                    recommendations[b, 1] += (neighborRatings[j, 1] * weight);
+                                    break;
                                 }
                             }
                         }
@@ -97,6 +144,9 @@ namespace UserItem.Recommender
             return recommendations;
         }
     }
+
+
+
     //def computeNearestNeighbor(self, username):
     //        """creates a sorted list of users based on their distance to
     //        username"""
