@@ -77,6 +77,7 @@ namespace UserItem.Recommender
             var recommendations = new double[k, 2];
             var userRatings = users[UserID];
             double total_distance = 0.0;
+            var recommendationRanking = new Dictionary<double, double[,]>();
             for (int i = 0; i < k-1; i++)
             {
                 total_distance += nearest[i,1];
@@ -91,53 +92,94 @@ namespace UserItem.Recommender
 
                 for (int j = 0; j <= row -1 ; j++)
                 {
-                    for (int a = 0; a < userRatings.GetLength(0)-1; a++)
+                    for (int a = 0; a <= userRatings.GetLength(0)-1; a++)
                     {
-                        if (!neighborRatings[j,0].Equals(userRatings[a,0]))
+                        if (neighborRatings[j, 0].Equals(userRatings[a, 0]))
                         {
-                            var recommendedProduct = ""; 
-                            for (int b = 0; b <= recommendations.GetLength(0) -1; b++)
+                            break;
+                        }
+                       else if (!neighborRatings[j,0].Equals(userRatings[a,0]) && a==userRatings.GetLength(0)-1)
+                        {
+                            var userdata = new double[,]
                             {
-                                //if (recommendations[b, 0] == null && recommendations[0, 0]!=null && !user_id.Equals(recommendations[b,0]) )
-                                //{
-                                //    recommendations[b, 0] = user_id;
-                                //    recommendations[b, 1] = (neighborRatings[j, 1]* weight);
-                                //}
-                                //else
-                                //{
-                                //    if (recommendations[0, 0] == null)
-                                //    {
-                                //        recommendations[b, 0] = user_id;
-                                //        recommendations[b, 1] = (neighborRatings[j, 1] * weight);
-                                //    }
-                                //    else
-                                //    {
-                                //        recommendations[b, 1] += (neighborRatings[j, 1] * weight);
-                                //    }
+                                {neighborRatings[j, 0],neighborRatings[j, 1]}
+                            };
+                            if (recommendationRanking.ContainsKey(user_id))
+                            {
+                                var data2 = new double[,] { };
+                                data2 = recommendationRanking[user_id];
+                                int rowLengthdata2 = data2.GetLength(0) - 1;
+                                int colLenghtdata2 = 2;
+                                int rowLengthdata3 = rowLengthdata2 + 1;
+                                int newRow2Ddata3 = data2.GetLength(0) + 1;
+                                var data3 = new double[newRow2Ddata3, colLenghtdata2];
 
-                                //}
-                                if (recommendations[0, 0] == 0)
+                                for (int r = 0; r <= rowLengthdata2; r++)
                                 {
-                                    recommendations[b, 0] = user_id;
-                                    recommendations[b, 1] = (neighborRatings[j, 1] * weight);
-                                    recommendedProduct = neighborRatings[j, 0] + "";
-                                    break;
+                                    for (int c = 0; c < colLenghtdata2; c++)
+                                    {
+                                        data3[r, c] = data2[r, c];
+                                    }
+
                                 }
-                                else if (!user_id.Equals(recommendations[b, 0]) && recommendations[b, 0].Equals(0) && !recommendedProduct.Contains(neighborRatings[j, 0]+""))
-                                {
-                                    recommendations[b, 0] = user_id;
-                                    recommendations[b, 1] = (neighborRatings[j, 1]* weight);
-                                    recommendedProduct = neighborRatings[j, 0] + "";
-                                    break;
-                                }
-                                else if(user_id.Equals(recommendations[b, 0]) && !recommendedProduct.Contains(neighborRatings[j, 0] + ""))
-                                {
-                                    recommendations[b, 1] += (neighborRatings[j, 1] * weight);
-                                    break;
-                                }
+                                data3[rowLengthdata3, 0] = neighborRatings[j, 0];
+                                data3[rowLengthdata3, 1] = neighborRatings[j, 1];
+                                recommendationRanking[user_id] = data3;
+
                             }
+                            else { recommendationRanking.Add(user_id, userdata); }
                         }
                     }
+                }
+            }
+            //Ranking van predictedvalue berekenen
+            var productCount = recommendationRanking.Count;
+            var predictedRanking = new double[3, 3];
+            // var usersCount = nearest.GetLength(0) - 1;
+           
+            for (int i = 0; i <= productCount-1; i++)
+            {
+                double sumPearson = 0;
+               // int reset= 0;
+              // double productValue= 
+                for (int j = 0; j <= k-1; j++)
+                {
+                    double key = recommendationRanking.ElementAt(j).Key;
+                    var data = recommendationRanking[key];
+                    for (int d = 0; d <= data.GetLength(0) - 1; d++)
+                    {
+                        if (predictedRanking[i, 0] == 0 )
+                        {
+                            double similarity = nearest[j, 1];
+                            double ranking = data[i, 1];
+                            sumPearson += similarity;
+                            predictedRanking[i, 0] = data[i, 0];
+                            predictedRanking[i, 1] += similarity * ranking;
+                            predictedRanking[i, 2] += (predictedRanking[0, 1] / sumPearson);
+                            break;
+                        }
+                        else if (predictedRanking[i, 0] == data[d, 0] && i==0)
+                        {
+                            double similarity = nearest[j, 1];
+                            double ranking = data[i, 1];
+                            sumPearson += similarity;
+                            predictedRanking[i, 0] = data[i, 0];
+                            predictedRanking[i, 1] += similarity * ranking;
+                            predictedRanking[i, 2] = (predictedRanking[i, 1] / sumPearson);
+                            break;
+                        }
+                        else if (predictedRanking[i, 0] == data[d, 0] )
+                        {
+                            double similarity = nearest[j, 1];
+                            double ranking = data[d, 1];
+                            sumPearson += similarity;
+                            predictedRanking[i, 0] = data[d, 0];
+                            predictedRanking[i, 1] += similarity * ranking;
+                            predictedRanking[i, 2] = (predictedRanking[i, 1] / sumPearson);
+                            break;
+                        }
+                    }
+
                 }
             }
             //sorteren tot k en dichtbij
@@ -147,63 +189,60 @@ namespace UserItem.Recommender
 
 
 
-    //def computeNearestNeighbor(self, username):
-    //        """creates a sorted list of users based on their distance to
-    //        username"""
-    //        distances = []
-    //        for instance in self.data:
-    //            if instance != username:
-    //                distance = self.fn(self.data[username],
-    //                                   self.data[instance])
-    //                distances.append((instance, distance))
-    //        # sort based on distance -- closest first
-    //        distances.sort(key=lambda artistTuple: artistTuple[1],
-    //                       reverse=True)
-    //        return distances
-
 }
 
-//def recommend(self, user):
-//       """Give list of recommendations"""
-//       recommendations = {}
-//       # first get list of users  ordered by nearness
-//       nearest = self.computeNearestNeighbor(user)
-//#
-//# now get the ratings for the user
-//#
-//       userRatings = self.data[user]
-//       #
-//       # determine the total distance
-//       totalDistance = 0.0
-//       for i in range(self.k) :
-//          totalDistance += nearest[i][1]
-//       # now iterate through the k nearest neighbors
-//       # accumulating their ratings
-//       for i in range(self.k) :
-//          # compute slice of pie 
-//          weight = nearest[i][1] / totalDistance
-//# get the name of the person
-//          name = nearest[i][0]
-//          # get the ratings for this person
-//          neighborRatings = self.data[name]
-//          # get the name of the person
-//          # now find bands neighbor rated that user didn't
-//          for artist in neighborRatings:
-//             if not artist in userRatings:
-//                if artist not in recommendations:
-//                   recommendations[artist] = (neighborRatings[artist]
-//                                              * weight)
-//                else:
-//                   recommendations[artist] = (recommendations[artist]
-//                                              + neighborRatings[artist]
-//                                              * weight)
-//       # now make list from dictionary
-//       recommendations = list(recommendations.items())
-//       recommendations = [(self.convertProductID2name(k), v)
-//                          for (k, v) in recommendations]
-//# finally sort and return
-//recommendations.sort(key=lambda artistTuple: artistTuple[1],
-//                            reverse = True)
-//       # Return the first n items
-//       return recommendations[:self.n]
 
+//public static double[,] ComputeRecommendations(int UserID, Dictionary<int, double[,]> users, int k)
+//{
+//    var nearest = ComputeNearestNeighbour(UserID, users);
+//    var recommendations = new double[k, 2];
+//    var userRatings = users[UserID];
+//    double total_distance = 0.0;
+//    for (int i = 0; i < k - 1; i++)
+//    {
+//        total_distance += nearest[i, 1];
+
+//    }
+//    for (int i = 0; i <= k - 1; i++)
+//    {
+//        var weight = nearest[i, 1] / total_distance;
+//        double user_id = nearest[i, 0];
+//        var neighborRatings = users[int.Parse(user_id.ToString())];
+//        int row = neighborRatings.GetLength(0);
+
+//        for (int j = 0; j <= row - 1; j++)
+//        {
+//            for (int a = 0; a < userRatings.GetLength(0) - 1; a++)
+//            {
+//                if (!neighborRatings[j, 0].Equals(userRatings[a, 0]))
+//                {
+//                    var recommendedProduct = "";
+//                    for (int b = 0; b <= recommendations.GetLength(0) - 1; b++)
+//                    {
+//                        if (recommendations[0, 0] == 0)
+//                        {
+//                            recommendations[b, 0] = user_id;
+//                            recommendations[b, 1] = (neighborRatings[j, 1] * weight);
+//                            recommendedProduct = neighborRatings[j, 0] + "";
+//                            break;
+//                        }
+//                        else if (!user_id.Equals(recommendations[b, 0]) && recommendations[b, 0].Equals(0) && !recommendedProduct.Contains(neighborRatings[j, 0] + ""))
+//                        {
+//                            recommendations[b, 0] = user_id;
+//                            recommendations[b, 1] = (neighborRatings[j, 1] * weight);
+//                            recommendedProduct = neighborRatings[j, 0] + "";
+//                            break;
+//                        }
+//                        else if (user_id.Equals(recommendations[b, 0]) && !recommendedProduct.Contains(neighborRatings[j, 0] + ""))
+//                        {
+//                            recommendations[b, 1] += (neighborRatings[j, 1] * weight);
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    //sorteren tot k en dichtbij
+//    return recommendations;
+//}
