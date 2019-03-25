@@ -51,7 +51,8 @@ namespace UserItem.Distances
             rightdown22 = Math.Pow(rightdown2, 2);
             rightUpper = rightUpper1 * rightUpper2;
             upper = leftUpper - (rightUpper / totalArticles);
-            down = Math.Sqrt(leftdown1 - (leftdown22 / totalArticles)) * Math.Sqrt(rightdown1 - (rightdown22) / totalArticles); Console.WriteLine(down);
+            down = Math.Sqrt(leftdown1 - (leftdown22 / totalArticles)) * Math.Sqrt(rightdown1 - (rightdown22) / totalArticles); 
+            /*Console.WriteLine(down);*/
             distance = upper / down;
 
             return distance;
