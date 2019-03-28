@@ -71,7 +71,7 @@ namespace UserItem.Recommender
             return newArray;
         }
 
-        public static double[,] ComputeRecommendations(int UserID, Dictionary<int, double[,]> users, int k)
+        public static void ComputeRecommendations(int UserID, Dictionary<int, double[,]> users, int k)
         {
             var nearest = ComputeNearestNeighbour(UserID, users);
             var recommendations = new double[k, 2];
@@ -183,7 +183,39 @@ namespace UserItem.Recommender
                 }
             }
             //sorteren tot k en dichtbij
-            return recommendations;
+            predictedRanking = Sort(predictedRanking);
+            for (int i = 0; i <= predictedRanking.GetLength(0)-1; i++)
+            {
+                Console.WriteLine("Product id: " + predictedRanking[i, 0]);
+                Console.WriteLine("Predicted value: " + predictedRanking[i, 2]);
+
+            }
+        }
+        public static double[,] Sort(double[,] datas)
+        {
+            var data = datas;
+            var number = data.GetLength(0);
+            var array = new double[number];
+            var newArray = new double[number, 3];
+            for (int i = 0; i <= data.GetLength(0) - 1; i++)
+            {
+                array[i] = data[i, 2];
+            }
+            Array.Sort(array);
+            Array.Reverse(array);
+            for (int a = 0; a <= data.GetLength(0) - 1; a++)
+            {
+                for (int b = 0; b <= data.GetLength(0) - 1; b++)
+                {
+                    if (array[a] == data[b, 2])
+                    {
+                        newArray[a, 0] = data[b, 0];
+                        newArray[a, 1] = data[b, 1];
+                        newArray[a, 2] = data[b, 2];
+                    }
+                }
+            }
+            return newArray;
         }
     }
 

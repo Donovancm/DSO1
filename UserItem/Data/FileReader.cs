@@ -10,7 +10,7 @@ namespace UserItem.Data
         {
 
         }
-        public Dictionary<int, double[,]> GetData(double[,] data)
+        public static Dictionary<int, double[,]> GetData(double[,] data)
         {
             var dictionary = new Dictionary<int, double[,]>();
             int rowLength = data.GetLength(0);
