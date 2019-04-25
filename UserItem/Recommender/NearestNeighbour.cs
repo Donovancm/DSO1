@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using UserItem.Distances;
+using UserItem.Interfaces;
 
 namespace UserItem.Recommender
 {
@@ -16,6 +18,8 @@ namespace UserItem.Recommender
     {
         public static double[,] ComputeNearestNeighbour(int UserID,  Dictionary<int, double[,]> users )
         {
+            IDistance iDistance = null;
+            iDistance = new Pearson();
             int row = users.Count-1;
             var distances_neighbours = new double[row, 2 ];
             var list_users = users;
@@ -24,9 +28,8 @@ namespace UserItem.Recommender
                 if (!item.Key.Equals(UserID))
                 {
                     var user_id = item.Key;
-                    var distance = Distances.Pearson.ComputePearson(users[UserID], users[item.Key]);
-                    
-                   for (int i = 0; i <= row-1; i++)
+                    var distance = iDistance.ComputeDistance(users[UserID], users[item.Key]);
+                    for (int i = 0; i <= row-1; i++)
                     {
                         if (distances_neighbours[i,0]==0)
                         {
@@ -222,59 +225,3 @@ namespace UserItem.Recommender
 
 
 }
-
-
-//public static double[,] ComputeRecommendations(int UserID, Dictionary<int, double[,]> users, int k)
-//{
-//    var nearest = ComputeNearestNeighbour(UserID, users);
-//    var recommendations = new double[k, 2];
-//    var userRatings = users[UserID];
-//    double total_distance = 0.0;
-//    for (int i = 0; i < k - 1; i++)
-//    {
-//        total_distance += nearest[i, 1];
-
-//    }
-//    for (int i = 0; i <= k - 1; i++)
-//    {
-//        var weight = nearest[i, 1] / total_distance;
-//        double user_id = nearest[i, 0];
-//        var neighborRatings = users[int.Parse(user_id.ToString())];
-//        int row = neighborRatings.GetLength(0);
-
-//        for (int j = 0; j <= row - 1; j++)
-//        {
-//            for (int a = 0; a < userRatings.GetLength(0) - 1; a++)
-//            {
-//                if (!neighborRatings[j, 0].Equals(userRatings[a, 0]))
-//                {
-//                    var recommendedProduct = "";
-//                    for (int b = 0; b <= recommendations.GetLength(0) - 1; b++)
-//                    {
-//                        if (recommendations[0, 0] == 0)
-//                        {
-//                            recommendations[b, 0] = user_id;
-//                            recommendations[b, 1] = (neighborRatings[j, 1] * weight);
-//                            recommendedProduct = neighborRatings[j, 0] + "";
-//                            break;
-//                        }
-//                        else if (!user_id.Equals(recommendations[b, 0]) && recommendations[b, 0].Equals(0) && !recommendedProduct.Contains(neighborRatings[j, 0] + ""))
-//                        {
-//                            recommendations[b, 0] = user_id;
-//                            recommendations[b, 1] = (neighborRatings[j, 1] * weight);
-//                            recommendedProduct = neighborRatings[j, 0] + "";
-//                            break;
-//                        }
-//                        else if (user_id.Equals(recommendations[b, 0]) && !recommendedProduct.Contains(neighborRatings[j, 0] + ""))
-//                        {
-//                            recommendations[b, 1] += (neighborRatings[j, 1] * weight);
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    //sorteren tot k en dichtbij
-//    return recommendations;
-//}

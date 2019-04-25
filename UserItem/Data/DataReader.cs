@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UserItem.Interfaces;
 
 namespace UserItem.Data
 {
-    class DataReader
+    class DataReader : IReader
     {
-        public static Dictionary<int, double[,]> GetData()
+        public Dictionary<int, double[,]> GetData()
         {
             var dictionary = new Dictionary<int, double[,]>();
 
