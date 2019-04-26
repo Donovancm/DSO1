@@ -137,41 +137,42 @@ namespace UserItem.Recommender
             }
             //Ranking van predictedvalue berekenen
             var productCount = recommendationRanking.Count;
-            var predictedRanking = new double[3, 3];
+            var predictedRanking = new double[productCount, 3];
             // var usersCount = nearest.GetLength(0) - 1;
+            List<double> itemList = new List<double>();
+
+            //set all users product items into predicted ranking matrix
+            for (int u = 0; u < productCount; u++)
+            {
+                double key = recommendationRanking.ElementAt(u).Key;
+                var rating = recommendationRanking[key];
+                for (int p = 0; p < rating.GetLength(0); p++)
+                {
+                    var item = rating[p, 0];
+                    if (!itemList.Contains(item))
+                    {
+                        itemList.Add(item);
+                    }
+                }
+
+            }
+            Array.Sort(itemList.ToArray());
+            for (int predRating = 0; predRating < predictedRanking.GetLength(0); predRating++)
+            {
+                predictedRanking[predRating,0] = itemList[predRating];
+            }
            
             for (int i = 0; i <= productCount-1; i++)
             {
                 double sumPearson = 0;
-               // int reset= 0;
-              // double productValue= 
+             
                 for (int j = 0; j <= k-1; j++)
                 {
                     double key = recommendationRanking.ElementAt(j).Key;
                     var data = recommendationRanking[key];
-                    for (int d = 0; d <= data.GetLength(0) - 1; d++)
+                    for (int d = 0; d < data.GetLength(0); d++)
                     {
-                        if (predictedRanking[i, 0] == 0 )
-                        {
-                            double similarity = nearest[j, 1];
-                            double ranking = data[i, 1];
-                            sumPearson += similarity;
-                            predictedRanking[i, 0] = data[i, 0];
-                            predictedRanking[i, 1] += similarity * ranking;
-                            predictedRanking[i, 2] += (predictedRanking[0, 1] / sumPearson);
-                            break;
-                        }
-                        else if (predictedRanking[i, 0] == data[d, 0] && i==0)
-                        {
-                            double similarity = nearest[j, 1];
-                            double ranking = data[i, 1];
-                            sumPearson += similarity;
-                            predictedRanking[i, 0] = data[i, 0];
-                            predictedRanking[i, 1] += similarity * ranking;
-                            predictedRanking[i, 2] = (predictedRanking[i, 1] / sumPearson);
-                            break;
-                        }
-                        else if (predictedRanking[i, 0] == data[d, 0] )
+                       if (predictedRanking[i, 0] == data[d, 0] )
                         {
                             double similarity = nearest[j, 1];
                             double ranking = data[d, 1];
@@ -179,7 +180,7 @@ namespace UserItem.Recommender
                             predictedRanking[i, 0] = data[d, 0];
                             predictedRanking[i, 1] += similarity * ranking;
                             predictedRanking[i, 2] = (predictedRanking[i, 1] / sumPearson);
-                            break;
+                            //break;
                         }
                     }
 
