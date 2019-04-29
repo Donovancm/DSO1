@@ -15,11 +15,14 @@ namespace UserItem
         public static int secTargetUser;
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Welcome to the magical User Item Recommendations");
 
             PickAlgorithm();
             Console.ReadLine();
         }
+        /// <summary>
+        /// User gets number of choices to compute similaries and recommendations
+        /// </summary>
         public static void PickAlgorithm()
         {
             IDistance iDistance = null;
@@ -82,8 +85,8 @@ namespace UserItem
                     }
                     else
                     {
-                        //iDistance = new Pearson();
-                        //Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryAdvanced[targetUser], dictionaryAdvanced[secTargetUser]));
+                        iDistance = new Pearson();
+                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryAdvanced[targetUser], dictionaryAdvanced[secTargetUser]));
                     }
                     break;
                 case 3:
@@ -120,6 +123,9 @@ namespace UserItem
                     break;
             }
         }
+        /// <summary>
+        /// Type and read user input
+        /// </summary>
         public static void PickTargetUsers()
         {
             Console.WriteLine("Select Targeted User");
@@ -128,12 +134,6 @@ namespace UserItem
             secTargetUser = int.Parse(Console.ReadLine());
         }
         
-        //public static Dictionary<int, double[,]> getData(double[,] data)
-        //{
-        //    FileReader r = new FileReader();
-        //    Dictionary<int, double[,]> dictionary = r.GetData(data);
-        //    return dictionary;
-        //}
 
     }
 }

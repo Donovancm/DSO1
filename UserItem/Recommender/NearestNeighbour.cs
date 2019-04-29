@@ -7,15 +7,14 @@ using UserItem.Interfaces;
 
 namespace UserItem.Recommender
 {
-    class UserNearestNeighbour
-    {
-        public int user_id;
-        public double distance;
-    }
-
-
     class NearestNeighbour
     {
+        /// <summary>
+        ///  Compute nearestneighbour with Pearson
+        /// </summary>
+        /// <param name="UserID">Chosen Target User</param>
+        /// <param name="users">Other users</param>
+        /// <returns>Neighbour distances returns into 2D array</returns>
         public static double[,] ComputeNearestNeighbour(int UserID,  Dictionary<int, double[,]> users )
         {
             IDistance iDistance = null;
@@ -44,11 +43,16 @@ namespace UserItem.Recommender
 
             }
             // forloop voor sorteren
-            distances_neighbours = InsertionSort(distances_neighbours);
+            distances_neighbours = NeighbourSort(distances_neighbours);
             return distances_neighbours;
         }
 
-        public static double[,] InsertionSort(double[,] datas)
+        /// <summary>
+        /// Sorting Similarity neighbours from high to low
+        /// </summary>
+        /// <param name="datas">distances of nearestneighbour</param>
+        /// <returns>Returns sorted neighbour distances</returns>
+        public static double[,] NeighbourSort(double[,] datas)
         {
             var data = datas;
             var number = data.GetLength(0);
@@ -74,6 +78,13 @@ namespace UserItem.Recommender
             return newArray;
         }
 
+        /// <summary>
+        /// Compute recommendations with neighbours
+        /// Prints Top Users
+        /// </summary>
+        /// <param name="UserID">Chosen Target user</param>
+        /// <param name="users">Other users</param>
+        /// <param name="k">Top similar users </param>
         public static void ComputeRecommendations(int UserID, Dictionary<int, double[,]> users, int k)
         {
             var nearest = ComputeNearestNeighbour(UserID, users);
@@ -86,6 +97,7 @@ namespace UserItem.Recommender
                 total_distance += nearest[i,1];
 
             }
+            //Code Example from Data Mining book Python from there refactored to C#
             for (int i = 0; i <= k-1; i++)
             {
                 var weight = nearest[i, 1] / total_distance;
@@ -195,6 +207,11 @@ namespace UserItem.Recommender
 
             }
         }
+        /// <summary>
+        ///  Sorting PredictedRankings
+        /// </summary>
+        /// <param name="datas">datas is a 2d array of predicted rankings</param>
+        /// <returns>Returns sorted predictedRankings from high to low</returns>
         public static double[,] Sort(double[,] datas)
         {
             var data = datas;
@@ -222,7 +239,4 @@ namespace UserItem.Recommender
             return newArray;
         }
     }
-
-
-
 }

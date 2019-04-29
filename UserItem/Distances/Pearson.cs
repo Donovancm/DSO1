@@ -7,6 +7,12 @@ namespace UserItem.Distances
 {
     class Pearson : IDistance
     {
+        /// <summary>
+        ///  Formule of Pearson is executed
+        /// </summary>
+        /// <param name="X">X as User 1</param>
+        /// <param name="Y">Y as User 2</param>
+        /// <returns>Similarity returned as a double</returns>
         public double ComputeDistance(double[,] X, double[,] Y)
         {
             double distance = 0.0;

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace UserItem.Distances
 {
+    /// <summary>
+    /// No extra points are given :'(
+    /// </summary>
     class Cosine
     {
         public static double CosineSimilarity(double[,] user1Rating, double[,] user2Rating)

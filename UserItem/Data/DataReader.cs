@@ -8,6 +8,10 @@ namespace UserItem.Data
 {
     class DataReader : IReader
     {
+        /// <summary>
+        /// Reads data from grouplens and converts it to dictonary
+        /// </summary>
+        /// <returns>Dictonary contains integer key and double 2d array values</returns>
         public Dictionary<int, double[,]> GetData()
         {
             var dictionary = new Dictionary<int, double[,]>();
@@ -19,7 +23,6 @@ namespace UserItem.Data
                 while ((line = reader.ReadLine()) != null)
                 {
                     list.Add(line); // Add to list.
-                    //Console.WriteLine(line); // Write to console.
                 }
             }
 

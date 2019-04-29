@@ -8,6 +8,10 @@ namespace UserItem.Data
 {
     class FileReader : IReader
     {
+        /// <summary>
+        /// Reads data from the UserItem.txt and converts it into a Dictonary
+        /// </summary>
+        /// <returns>Dictonary contains integer key and double 2d array values</returns>
         public Dictionary<int, double[,]> GetData()
         {
             var dictionary = new Dictionary<int, double[,]>();

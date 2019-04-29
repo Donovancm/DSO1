@@ -6,10 +6,19 @@ using UserItem.Interfaces;
 
 namespace UserItem.Distances
 {
+    /// <summary>
+    /// Computation of Euclidean similarity with as input of X and Y
+    /// </summary>
     class Euclidean : IDistance
     {
         static double similarity;
 
+        /// <summary>
+        ///  Formula of Euclidean is executed
+        /// </summary>
+        /// <param name="X">X as User 1</param>
+        /// <param name="Y">Y as User 2</param>
+        /// <returns>Similarity in double</returns>
         public double ComputeDistance(double[,] X, double[,] Y)
         {
             double distance = 0.0;
