@@ -15,7 +15,7 @@ namespace UserItem.Recommender
         /// <param name="UserID">Chosen Target User</param>
         /// <param name="users">Other users</param>
         /// <returns>Neighbour distances returns into 2D array</returns>
-        public static double[,] ComputeNearestNeighbour(int UserID,  Dictionary<int, double[,]> users )
+        public static double[,] ComputeNearestNeighbour(int UserID,  Dictionary<int, double[,]> users, double treshold )
         {
             IDistance iDistance = null;
             iDistance = new Pearson();
@@ -30,7 +30,7 @@ namespace UserItem.Recommender
                     var distance = iDistance.ComputeDistance(users[UserID], users[item.Key]);
                     for (int i = 0; i <= row-1; i++)
                     {
-                        if (distances_neighbours[i,0]==0)
+                        if (distances_neighbours[i,0]==0 && distance >= treshold )
                         {
                                 distances_neighbours[i, 0] = user_id;
                                 distances_neighbours[i, 1] = distance;
@@ -85,9 +85,9 @@ namespace UserItem.Recommender
         /// <param name="UserID">Chosen Target user</param>
         /// <param name="users">Other users</param>
         /// <param name="k">Top similar users </param>
-        public static void ComputeRecommendations(int UserID, Dictionary<int, double[,]> users, int k)
+        public static void ComputeRecommendations(int UserID, Dictionary<int, double[,]> users, int k, double treshold)
         {
-            var nearest = ComputeNearestNeighbour(UserID, users);
+            var nearest = ComputeNearestNeighbour(UserID, users, treshold);
             var recommendations = new double[k, 2];
             var userRatings = users[UserID];
             double total_distance = 0.0;

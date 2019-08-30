@@ -17,7 +17,7 @@ namespace UserItem.Data
             var dictionary = new Dictionary<int, double[,]>();
 
             List<string> list = new List<string>();
-            using (StreamReader reader = new StreamReader("C:/Users/Donovan/source/repos/UserItem/UserItem/Files/u.data"))
+            using (StreamReader reader = new StreamReader("../../../Files/u.data"))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)

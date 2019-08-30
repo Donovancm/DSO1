@@ -107,14 +107,17 @@ namespace UserItem
                     Console.WriteLine("You have chosen Recommendation");
                     Console.WriteLine("Select Top numbers of ranking");
                     int k = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Set up your threshold");
+                    double threshold = double.Parse(Console.ReadLine());
+
 
                     if (choiceData == 1)
                     {
-                        Recommender.NearestNeighbour.ComputeRecommendations(targetUser, dictionaryBasic, k);
+                        Recommender.NearestNeighbour.ComputeRecommendations(targetUser, dictionaryBasic, k, threshold);
                     }
                     else
                     {
-                       Recommender.NearestNeighbour.ComputeRecommendations(targetUser, dictionaryAdvanced,k);
+                       Recommender.NearestNeighbour.ComputeRecommendations(targetUser, dictionaryAdvanced,k, threshold);
                     }
                     break;
                 default:
