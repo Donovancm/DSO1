@@ -15,7 +15,7 @@ namespace UserItem
         public static int secTargetUser;
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to the magical User Item Recommendations");
+            Console.WriteLine("UserItem");
 
             PickAlgorithm();
             Console.ReadLine();
@@ -94,11 +94,13 @@ namespace UserItem
                     Console.WriteLine("You have chosen Cosine");
                     if (choiceData == 1)
                     {
-                        Console.WriteLine("The similarity is: " + Cosine.CosineSimilarity(dictionaryBasic[targetUser], dictionaryBasic[secTargetUser]));
+                        iDistance = new Cosine();
+                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryBasic[targetUser], dictionaryBasic[secTargetUser]));
                     }
                     else
                     {
-                        Console.WriteLine("The similarity is: " + Cosine.CosineSimilarity(dictionaryAdvanced[targetUser], dictionaryAdvanced[secTargetUser]));
+                        iDistance = new Cosine();
+                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryAdvanced[targetUser], dictionaryAdvanced[secTargetUser]));
                     }
                     break;
                 case 4:

@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UserItem.Interfaces;
 
 namespace UserItem.Distances
 {
     /// <summary>
     /// No extra points are given :'(
     /// </summary>
-    class Cosine
-    {
-        public static double CosineSimilarity(double[,] user1Rating, double[,] user2Rating)
+    class Cosine  : IDistance
+    { 
+        public double ComputeDistance(double[,] X, double[,] Y)
         {
             double part1 = 0.0;
             double part2 = 0.0;
             double part3 = 0.0;
 
-            double[,] User1Ratings = user1Rating;
-            double[,] User2Ratings = user2Rating;
+            double[,] User1Ratings = X;
+            double[,] User2Ratings = Y;
 
 
             int rowLengthUser1 = User1Ratings.GetLength(0);
@@ -24,18 +25,18 @@ namespace UserItem.Distances
             int colLength = User1Ratings.GetLength(1);
 
             //Checks for product in User1
-            for (int i = 0; i < rowLengthUser1-1; i++)
+            for (int i = 0; i < rowLengthUser1 - 1; i++)
             {
                 int rowwLengthUser2 = User2Ratings.GetLength(0);
-                for (int j = 0; j <= rowwLengthUser2-1; j++)
+                for (int j = 0; j <= rowwLengthUser2 - 1; j++)
                 {
                     if (User1Ratings[i, 0].Equals(User2Ratings[j, 0]))
                     {
                         break;
                     }
-                    else if (i>= rowLengthUser2 || !User1Ratings[i, 0].Equals( User2Ratings[j, 0]))
+                    else if (i >= rowLengthUser2 || !User1Ratings[i, 0].Equals(User2Ratings[j, 0]))
                     {
-                        if ( j == rowLengthUser2-1)
+                        if (j == rowLengthUser2 - 1)
                         {
                             int newRowLengthUser2 = User2Ratings.GetLength(0);
                             int newRow2Ddata3 = newRowLengthUser2 + 1;
@@ -54,30 +55,30 @@ namespace UserItem.Distances
                             User2Ratings = null;
                             User2Ratings = data3;
                         }
-                        
+
                     }
                 }
             }
 
 
             //Checks for product in User2
-            for (int i = 0; i <= rowLengthUser2-1; i++)
+            for (int i = 0; i <= rowLengthUser2 - 1; i++)
             {
                 int rowwLengthUser1 = User1Ratings.GetLength(0);
-                for (int j = 0; j <= rowwLengthUser1-1; j++)
+                for (int j = 0; j <= rowwLengthUser1 - 1; j++)
                 {
-                    if(User2Ratings[i, 0].Equals(User1Ratings[j, 0]))
+                    if (User2Ratings[i, 0].Equals(User1Ratings[j, 0]))
                     {
                         break;
                     }
                     else if (i >= rowLengthUser1 || !User2Ratings[i, 0].Equals(User1Ratings[j, 0]))
                     {
-                        if (j == (rowLengthUser1-1))
+                        if (j == (rowLengthUser1 - 1))
                         {
                             //int rowLengthdata3 = (rowLengthUser1-1) + 1;
                             int newRowLengthUser1 = User1Ratings.GetLength(0);
                             int newRow2Ddata3 = newRowLengthUser1 + 1;
-                            var data3 = new double[newRow2Ddata3,2];
+                            var data3 = new double[newRow2Ddata3, 2];
 
                             for (int r = 0; r < newRowLengthUser1; r++)
                             {
@@ -87,19 +88,19 @@ namespace UserItem.Distances
                                 }
 
                             }
-                            data3[newRow2Ddata3-1, 0] = User2Ratings[i, 0];
-                            data3[newRow2Ddata3-1, 1] = 0.0;
+                            data3[newRow2Ddata3 - 1, 0] = User2Ratings[i, 0];
+                            data3[newRow2Ddata3 - 1, 1] = 0.0;
                             User1Ratings = null;
                             User1Ratings = data3;
                         }
-                       
+
                     }
                 }
             }
 
             int newRowwLengthUser1 = User1Ratings.GetLength(0);
             int newRowwLengthUser2 = User2Ratings.GetLength(0);
-            for (int i = 0; i < newRowwLengthUser1-1; i++)
+            for (int i = 0; i < newRowwLengthUser1 - 1; i++)
             {
                 part2 += Math.Pow(User1Ratings[i, 1], 2);
                 part3 += Math.Pow(User2Ratings[i, 1], 2);
@@ -114,7 +115,7 @@ namespace UserItem.Distances
                     {
                         part1 += User1Ratings[i, 1] * User2Ratings[j, 1];
                     }
-                    
+
                 }
             }
 
