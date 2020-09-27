@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UserItem.Data;
 using UserItem.Distances;
 using UserItem.Interfaces;
+using UserItem.Recommender;
 
 namespace UserItem
 {
@@ -29,6 +31,7 @@ namespace UserItem
             Console.WriteLine("Pick 2 for Pearson");
             Console.WriteLine("Pick 3 for Cosine");
             Console.WriteLine("Pick 4 for Recommendation");
+            Console.WriteLine("Pick 5 for NearestNeighbor");
             choice = int.Parse(Console.ReadLine());
             Console.WriteLine("Pick 1 for Basic Dataset");
             Console.WriteLine("Pick 2 for Advanced Dataset");
@@ -114,6 +117,28 @@ namespace UserItem
                     else
                     {
                        Recommender.NearestNeighbour.ComputeRecommendations(targetUser, dictionaryAdvanced,k, threshold);
+                    }
+                    break;
+                case 5:
+                    Console.WriteLine("Select Targeted User");
+                    targetUser = int.Parse(Console.ReadLine());
+                    Console.WriteLine("You have chosen NearestNeighbor");
+                    Console.WriteLine("Select K");
+                    k = int.Parse(Console.ReadLine());
+                    Console.WriteLine("Set up your threshold");
+                    threshold = double.Parse(Console.ReadLine());
+         
+                    iDistance = new Pearson();
+                    
+                    if (choiceData == 1)
+                    {
+                        RecommendNearestNeighbour.Run(threshold,targetUser,iDistance, dictionaryBasic, k);
+                    }
+                    else
+                    {
+                        Console.WriteLine("How many users");
+                        int amount = int.Parse(Console.ReadLine());
+                        RecommendNearestNeighbour.Run(threshold, targetUser, iDistance, dictionaryAdvanced.OrderBy(x => x.Key).Take(amount).ToDictionary(pair => pair.Key, pair => pair.Value), k);
                     }
                     break;
                 default:
