@@ -12,11 +12,9 @@ namespace UserItem
         public static int choice;
         public static int choiceData;
         public static int targetUser;
-        public static int secTargetUser;
         static void Main(string[] args)
         {
             Console.WriteLine("UserItem");
-            ///
             PickAlgorithm();
             Console.ReadLine();
         }
@@ -54,9 +52,6 @@ namespace UserItem
                     break;
             }
 
-            //var user1 = SelectUser.selectUserCosine(dictionary);
-            //var user2 = SelectUser.selectUserCosine(dictionary);
-
             switch (choice)
             {
                 case 1:
@@ -65,12 +60,12 @@ namespace UserItem
                     if (choiceData == 1)
                     {
                         iDistance = new Euclidean();
-                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryBasic[targetUser], dictionaryBasic[secTargetUser]));
+                        IterateSimilarity(dictionaryBasic, targetUser, iDistance);
                     }
                     else
                     {
                         iDistance = new Euclidean();
-                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryAdvanced[targetUser], dictionaryAdvanced[secTargetUser]));
+                        IterateSimilarity(dictionaryAdvanced, targetUser, iDistance);
                     }
                     break;
                 case 2:
@@ -80,13 +75,12 @@ namespace UserItem
                     if (choiceData == 1)
                     {
                         iDistance = new Pearson();
-                        //Console.WriteLine("The similarity is: " + Distances.Pearson.ComputePearson(dictionaryBasic[targetUser], dictionaryBasic[secTargetUser]));
-                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryBasic[targetUser], dictionaryBasic[secTargetUser]));
+                        IterateSimilarity(dictionaryBasic, targetUser, iDistance);
                     }
                     else
                     {
                         iDistance = new Pearson();
-                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryAdvanced[targetUser], dictionaryAdvanced[secTargetUser]));
+                        IterateSimilarity(dictionaryAdvanced, targetUser, iDistance);
                     }
                     break;
                 case 3:
@@ -95,12 +89,12 @@ namespace UserItem
                     if (choiceData == 1)
                     {
                         iDistance = new Cosine();
-                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryBasic[targetUser], dictionaryBasic[secTargetUser]));
+                        IterateSimilarity(dictionaryBasic, targetUser, iDistance);
                     }
                     else
                     {
                         iDistance = new Cosine();
-                        Console.WriteLine("The similarity is: " + iDistance.ComputeDistance(dictionaryAdvanced[targetUser], dictionaryAdvanced[secTargetUser]));
+                        IterateSimilarity(dictionaryAdvanced, targetUser, iDistance);
                     }
                     break;
                 case 4:
@@ -135,10 +129,20 @@ namespace UserItem
         {
             Console.WriteLine("Select Targeted User");
             targetUser = int.Parse(Console.ReadLine());
-            Console.WriteLine("Select Second Targeted User");
-            secTargetUser = int.Parse(Console.ReadLine());
         }
         
+        public static void IterateSimilarity(Dictionary<int, double[,]> dataSet, int targetUser, IDistance iDistance)
+        {
+            var userRatings = dataSet[targetUser];
+            foreach (var userID in dataSet.Keys)
+            {
+                if (userID != targetUser)
+                {
+                    Console.WriteLine("UserId:" + userID + ", The similarity is: " + iDistance.ComputeDistance(userRatings, dataSet[userID]));
+
+                }
+            }
+        }
 
     }
 }
